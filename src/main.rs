@@ -2,6 +2,7 @@ use std::io::{self, Write};
 use rand::{rngs::ThreadRng, Rng};
 
 mod command;
+mod roller;
 
 fn main() {
     println!("Type dice command like '2d6' to roll dice.");
@@ -15,7 +16,7 @@ fn main() {
 
     //println!("{}", roll_die(3));
 
-    let result = command::execute_command("2d6");
+    let result = command::execute_command("2d20");
 
     if result.is_ok() {
         println!("regex is valid");
