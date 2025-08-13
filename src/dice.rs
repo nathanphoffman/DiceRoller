@@ -5,5 +5,5 @@ fn roll_die(sides: i32) -> i32 {
 }
 
 fn roll_results(command: &str, times: i32) {
-    
+
 }

@@ -1,6 +1,8 @@
 use std::io::{self, Write};
 use rand::{rngs::ThreadRng, Rng};
 
+mod command;
+
 fn main() {
     println!("Type dice command like '2d6' to roll dice.");
     println!("'table %command%' will display a balanced table of preformed balanced outputs");
@@ -11,9 +13,13 @@ fn main() {
 
     io::stdout().flush().unwrap();
 
-    println!("{}",roll_die(3));
+    //println!("{}", roll_die(3));
 
-    
+    let result = command::execute_command("3122dd6333");
+
+    if result.is_ok() {
+        println!("regex is valid");
+    }
 
     // let mut input = String::new();
 
