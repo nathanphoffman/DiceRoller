@@ -1,45 +1,25 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug executable 'diceroller'",
-            "cargo": {
-                "args": [
-                    "build",
-                    "--bin=diceroller",
-                    "--package=diceroller"
-                ],
-                "filter": {
-                    "name": "diceroller",
-                    "kind": "bin"
-                }
-            },
+            "name": "Launch",
+            "program": "${workspaceFolder}/target/debug/DiceRoller",
             "args": [],
+            "preLaunchTask": "cargo build",
             "cwd": "${workspaceFolder}"
         },
         {
+            "name": "Debug Rust",
             "type": "lldb",
             "request": "launch",
-            "name": "Debug unit tests in executable 'diceroller'",
-            "cargo": {
-                "args": [
-                    "test",
-                    "--no-run",
-                    "--bin=diceroller",
-                    "--package=diceroller"
-                ],
-                "filter": {
-                    "name": "diceroller",
-                    "kind": "bin"
-                }
-            },
+            "program": "${workspaceFolder}/target/debug/DiceRoller",
             "args": [],
-            "cwd": "${workspaceFolder}"
+            "cwd": "${workspaceFolder}",
+            "env": {},
+            "preLaunchTask": "cargo build",
+            "internalConsoleOptions": "openOnSessionStart"
         }
     ]
 }

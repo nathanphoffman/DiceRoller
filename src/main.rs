@@ -15,7 +15,7 @@ fn main() {
 
     //println!("{}", roll_die(3));
 
-    let result = command::execute_command("3122dd6333");
+    let result = command::execute_command("2d6");
 
     if result.is_ok() {
         println!("regex is valid");
