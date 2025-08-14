@@ -1,11 +1,13 @@
+use futures::future::join_all;
 use rand::{Rng, rngs::ThreadRng};
+use std::sync::Arc;
 
-pub fn roll_dice(number: i32, sides: i32) -> i32 {
+pub fn roll_dice(number: u32, sides: u32) -> u32 {
     let mut rng: ThreadRng = rand::rng();
-    let mut total: i32 = 0;
+    let mut total: u32 = 0;
 
     for _ in 0..number {
-        let die_roll: i32 = rng.random_range(1..=sides);
+        let die_roll: u32 = rng.random_range(1..=sides);
         println!("die roll is {}", die_roll);
         total += die_roll;
     }
@@ -13,18 +15,26 @@ pub fn roll_dice(number: i32, sides: i32) -> i32 {
     return total;
 }
 
-pub async fn average(max_runs: i32, no_change_tolerance: i32, number: i32, sides: i32) {
+pub async fn average(
+    max_runs: u32,
+    interval: u32,
+    no_change_tolerance: u32,
+    number: u32,
+    sides: u32,
+) {
+    let interval_size: Vec<u32> = (0..interval).collect(); // Create a vector of interval sizes
+    let interval_size_arc = Arc::new(interval_size);
 
-    let task1 = tokio::spawn(async {
-        // Simulate some asynchronous work
+    let tasks: Vec<_> = (0..interval)
+        .map(|_| {
+            let interval_size_clone: Arc<Vec<u32>> = Arc::clone(&interval_size_arc); // Clone the Arc for each task
 
-        println!("Task 1 is running");
-
-        tokio::time::sleep(tokio::time::Duration::from_secs(3)).await;
-
-        println!("Task 1 is complete");
-    });
+            tokio::spawn(async move {
+                let results = &interval_size_clone.iter().map(|_| roll_dice(number, sides));
+            })
+        })
+        .collect();
 
     // Wait for tasks to complete
-    let _ = tokio::join!(task1);
+    let _ = join_all(tasks).await;
 }
