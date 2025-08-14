@@ -1,13 +1,14 @@
 use regex::Regex;
 
-use crate::roller;
+use crate::roller::{self, make_dice_rolls, get_average};
+use crate::utility::{round_two_decimal};
 
-fn get_command_dice(command: &str) -> (i32, i32) {
+fn get_command_dice(command: &str) -> (u32, u32) {
 
     let components: Vec<&str> = command.split('d').collect();
 
-    let number_of_dice: i32 = components[0].parse().unwrap();
-    let sides_of_dice: i32 = components[1].parse().unwrap();
+    let number_of_dice: u32 = components[0].parse().unwrap();
+    let sides_of_dice: u32 = components[1].parse().unwrap();
 
     return (number_of_dice, sides_of_dice);
 }
@@ -41,7 +42,7 @@ fn validate_and_get_commands(command: &str) -> Option<(&str, &str)> {
 
 }
 
-pub fn execute_command(command: &str) -> Result<&'static str, &'static str> {
+pub async fn execute_command(command: &str) -> Result<&'static str, &'static str> {
 
     let commands = validate_and_get_commands(command);
 
@@ -53,8 +54,12 @@ pub fn execute_command(command: &str) -> Result<&'static str, &'static str> {
         let die_commands = get_command_dice(command);
         println!("The dice are, {}, {}", die_commands.0, die_commands.1);
 
-        let total = roller::roll_dice(die_commands.0, die_commands.1);
-        println!("The result of the die roll is, {}", total);
+        let results = make_dice_rolls(1, 100, 10_000, 0, die_commands.0, die_commands.1).await;
+        let avg = get_average(results);
+        println!("The average is {}", round_two_decimal(avg));
+
+        //let total = roller::roll_dice(die_commands.0, die_commands.1);
+        //println!("The result of the die roll is, {}", total);
     
         return Ok("Command is ok");
     }

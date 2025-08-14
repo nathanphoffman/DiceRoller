@@ -3,6 +3,7 @@ use rand::{rngs::ThreadRng, Rng};
 
 mod command;
 mod roller;
+mod utility;
 
 fn main() {
     println!("Type dice command like '2d6' to roll dice.");
@@ -16,11 +17,12 @@ fn main() {
 
     //println!("{}", roll_die(3));
 
-    let result = command::execute_command("2d20");
+    let runtime = tokio::runtime::Runtime::new().unwrap();
+    let result = runtime.block_on(command::execute_command("10d20"));
 
-    if result.is_ok() {
-        println!("regex is valid");
-    }
+     if result.is_ok() {
+         println!("program ran successfully");
+     }
 
     // let mut input = String::new();
 
