@@ -34,14 +34,13 @@ pub async fn make_dice_rolls(
 
     let tasks: Vec<_> = (0..interval)
         .map(|_| {
+
             let batch_size_clone = batch_size.clone();
-            let number_clone2 = number_clone;
-            let sides_clone2 = sides_clone;
 
             // batch together multiple die results into each task so that each task does more than one roll
             tokio::spawn(async move {
                 let results: Vec<u32> = batch_size_clone
-                    .map(|_| roll_dice(number_clone2, sides_clone2))
+                    .map(|_| roll_dice(number_clone, sides_clone))
                     .collect();
                 return results;
             })
