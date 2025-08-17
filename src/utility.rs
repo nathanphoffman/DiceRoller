@@ -1,3 +1,3 @@
-pub fn round_two_decimal(value: f64) -> f64 {
-    (value * 100.0).round() / 100.0
+pub fn round_one_place(value: f64) -> f64 {
+    (value * 10.0).round() / 10.0
 }

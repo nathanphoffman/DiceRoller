@@ -1,10 +1,9 @@
 use regex::Regex;
 
-use crate::roller::{self, make_dice_rolls, get_average};
-use crate::utility::{round_two_decimal};
+use crate::roller::{self, get_average, get_sum, make_dice_rolls};
+use crate::utility::round_one_place;
 
 fn get_command_dice(command: &str) -> (u32, u32) {
-
     let components: Vec<&str> = command.split('d').collect();
 
     let number_of_dice: u32 = components[0].parse().unwrap();
@@ -19,15 +18,14 @@ fn is_dice_command_valid(command: &str) -> bool {
 }
 
 fn validate_and_get_commands(command: &str) -> Option<(&str, &str)> {
-
     let components: Vec<&str> = command.split(' ').collect();
 
     if components.len() < 2 {
         return Some(("", command));
     }
-  
-    let comp1 : &str = components[0];
-    let comp2 : &str = components[1];
+
+    let comp1: &str = components[0];
+    let comp2: &str = components[1];
 
     println!("{}, {}", &comp1, &comp2);
 
@@ -35,36 +33,35 @@ fn validate_and_get_commands(command: &str) -> Option<(&str, &str)> {
 
     if keywords.contains(&comp1) {
         return Some((&comp1, &comp2));
-    }
-    else {
+    } else {
         return None;
     }
-
 }
 
 pub async fn execute_command(command: &str) -> Result<&'static str, &'static str> {
-
     let commands = validate_and_get_commands(command);
 
     if commands != None {
 
         let keyword = commands.unwrap().0;
         let command = commands.unwrap().1;
+        execute_command_portion(command).await;
 
-        let die_commands = get_command_dice(command);
-        println!("The dice are, {}, {}", die_commands.0, die_commands.1);
-
-        let results = make_dice_rolls(1, 100, 10_000, 0, die_commands.0, die_commands.1).await;
-        let avg = get_average(results);
-        println!("The average is {}", round_two_decimal(avg));
-
-        //let total = roller::roll_dice(die_commands.0, die_commands.1);
-        //println!("The result of the die roll is, {}", total);
-    
         return Ok("Command is ok");
-    }
-    else {
+    } else {
         return Err("Command is not well formed");
     }
+}
 
+pub async fn execute_command_portion(command: &str) -> Vec<u32> {
+
+    let die_commands = get_command_dice(command);
+    println!("The dice are, {}, {}", die_commands.0, die_commands.1);
+    let results = make_dice_rolls(100, 100, die_commands.0, die_commands.1).await;
+    let avg = get_average(&results);
+    println!("The average is {}", avg);
+    let sum = get_sum(&results);
+    println!("The sum is {}", sum);
+
+    return results;
 }
