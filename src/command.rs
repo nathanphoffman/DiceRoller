@@ -1,7 +1,6 @@
 use regex::Regex;
 
 use crate::roller::{self, get_average, get_sum, make_dice_rolls};
-use crate::utility::round_one_place;
 
 fn get_command_dice(command: &str) -> (u32, u32) {
     let components: Vec<&str> = command.split('d').collect();
@@ -42,10 +41,11 @@ pub async fn execute_command(command: &str) -> Result<&'static str, &'static str
     let commands = validate_and_get_commands(command);
 
     if commands != None {
+        //let plusComponents: Vec<&str> = command.split('+').collect();
 
         let keyword = commands.unwrap().0;
         let command = commands.unwrap().1;
-        execute_command_portion(command).await;
+        execute_dice_command(command).await;
 
         return Ok("Command is ok");
     } else {
@@ -53,8 +53,7 @@ pub async fn execute_command(command: &str) -> Result<&'static str, &'static str
     }
 }
 
-pub async fn execute_command_portion(command: &str) -> Vec<u32> {
-
+pub async fn execute_dice_command(command: &str) -> Vec<u32> {
     let die_commands = get_command_dice(command);
     println!("The dice are, {}, {}", die_commands.0, die_commands.1);
     let results = make_dice_rolls(100, 100, die_commands.0, die_commands.1).await;

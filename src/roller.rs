@@ -2,7 +2,7 @@ use futures::future::join_all;
 use rand::{Rng, rngs::ThreadRng};
 use std::{ops::Range, sync::Arc};
 
-use crate::utility::round_one_place;
+use crate::utility::round_to_one_place;
 
 pub fn roll_dice(number: u32, sides: u32) -> u32 {
     let mut rng: ThreadRng = rand::rng();
@@ -20,7 +20,7 @@ pub fn get_average(results: &Vec<u32>) -> f64 {
     let sum_results: u32 = results.iter().sum();
     let num_results: f64 = results.iter().count() as f64;
     let avg = f64::from(sum_results) / num_results;
-    return round_one_place(avg);
+    return round_to_one_place(avg);
 }
 
 pub fn get_sum(results: &Vec<u32>) -> u32 {
