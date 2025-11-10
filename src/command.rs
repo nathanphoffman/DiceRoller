@@ -45,7 +45,46 @@ pub async fn execute_command(command: &str) -> Result<&'static str, &'static str
 
         let keyword = commands.unwrap().0;
         let command = commands.unwrap().1;
-        execute_dice_command(command).await;
+
+        let plus_commands: Vec<&str> = command.split('+').collect();
+   
+        let mut positive_results: Vec<Vec<u32>> = Vec::new();
+        let mut negative_results: Vec<Vec<u32>> = Vec::new();
+
+        for plus_command in plus_commands {
+
+            // if someone puts a + leading a die command with nothing before it 
+            // it will result in an empty string first command sequence
+            if plus_command == "" {
+                continue;
+            }
+
+            let minus_commands: Vec<&str> = plus_command.split('-').collect();
+            let minus_commands_first_element = minus_commands[0];
+
+            for minus_command in minus_commands {
+
+                // the first command if not an empty string must be the plus command that was split on
+                // if it is an empty string it must mean this is a minus or series of minus commands
+                if (minus_command == minus_commands_first_element) && minus_command != "" {
+                    positive_results.push(execute_dice_command(minus_command).await);
+                    continue;
+                }
+
+                negative_results.push(execute_dice_command(minus_command).await);
+            }
+
+        let mut final_results: Vec<u32> = roller::combine_results_add(&positive_results);
+        let negative_combined_results: Vec<u32> = roller::combine_results_add(&negative_results);
+       
+        let final_sum: u32 = get_sum(&final_results);
+        
+    
+            println!("The length is {}", final_results.len());
+            println!("{:?}", final_results);
+        }
+/* */
+        
 
         return Ok("Command is ok");
     } else {

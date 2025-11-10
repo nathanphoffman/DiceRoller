@@ -27,6 +27,46 @@ pub fn get_sum(results: &Vec<u32>) -> u32 {
     let sum_results: u32 = results.iter().sum();
     return sum_results;
 }
+// I should do these with a reduce (Rust calls that folding)
+pub fn combine_results_add(results: &Vec<Vec<u32>>) -> Vec<u32> {
+    let mut combined_results: Vec<u32> = Vec::new();
+
+    if results.len() == 0 {
+        return combined_results;
+    }
+
+    let num_results: usize = results[0].len();
+
+    for i in 0..num_results {
+        let mut total: u32 = 0;
+        for result_set in results {
+            total += result_set[i];
+        }
+        combined_results.push(total);
+    }
+
+    return combined_results;
+}
+
+pub fn combine_results_subtract(results: &Vec<Vec<u32>>) -> Vec<u32> {
+    let mut combined_results: Vec<u32> = Vec::new();
+
+    if results.len() == 0 {
+        return combined_results;
+    }
+
+    let num_results: usize = results[0].len();
+
+    for i in 0..num_results {
+        let mut total: i32 = results[0][i] as i32;
+        for result_set in &results[1..] {
+            total -= result_set[i] as i32;
+        }
+        combined_results.push(total.max(0) as u32); // Ensure no negative results
+    }
+
+    return combined_results;
+}
 
 pub async fn make_dice_rolls(
     interval: u32,
